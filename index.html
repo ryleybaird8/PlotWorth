@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plot Worth — Live Property Search</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e1a2b;
+    --ink-mid: #1c2f47;
+    --blue: #1d4ed8;
+    --blue-light: #3b82f6;
+    --teal: #0d9488;
+    --cream: #faf7f2;
+    --cream-dark: #f0ebe0;
+    --sand: #e8e0d0;
+    --text: #1e293b;
+    --muted: #64748b;
+    --light: #f8fafc;
+    --border: #e2e8f0;
+    --green: #16a34a;
+    --green-bg: #f0fdf4;
+    --red: #dc2626;
+    --red-bg: #fef2f2;
+    --amber: #d97706;
+    --amber-bg: #fffbeb;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    background: var(--ink);
+    padding: 0 32px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-pip { width: 8px; height: 8px; background: var(--teal); border-radius: 50%; display: inline-block; }
+  .logo span { color: var(--blue-light); }
+  .nav-tag { font-size: 0.72rem; color: rgba(255,255,255,0.3); font-weight: 400; letter-spacing: 0.04em; }
+
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    padding: 48px 32px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 40px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 80% at 10% 50%, rgba(29,78,216,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 90% 20%, rgba(13,148,136,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; z-index: 2; text-align: center; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px; padding: 5px 14px;
+    font-size: 0.73rem; color: rgba(255,255,255,0.5);
+    letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 20px;
+  }
+
+  .live-dot { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 300; color: var(--cream);
+    line-height: 1.2; letter-spacing: -0.025em; margin-bottom: 10px;
+  }
+
+  .hero h1 em { font-style: italic; color: var(--blue-light); }
+  .hero-sub { font-size: 0.92rem; color: rgba(255,255,255,0.45); margin-bottom: 32px; line-height: 1.6; }
+
+  /* SEARCH BOX */
+  .search-wrap {
+    background: white; border-radius: 16px; padding: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+
+  .search-main-row {
+    display: grid;
+    grid-template-columns: 1.2fr auto;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: end;
+  }
+
+  .postcode-field { display: flex; flex-direction: column; gap: 5px; }
+
+  .postcode-field label {
+    font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .postcode-field input {
+    height: 48px; padding: 0 16px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem;
+    color: var(--text); background: var(--light); outline: none;
+    transition: border-color 0.15s; width: 100%;
+    letter-spacing: 0.05em; font-weight: 500;
+  }
+
+  .postcode-field input:focus { border-color: var(--blue); background: white; }
+  .postcode-field input::placeholder { color: #94a3b8; font-weight: 400; letter-spacing: 0; }
+
+  .search-btn {
+    height: 48px; padding: 0 28px;
+    background: var(--ink); color: white; border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 8px; white-space: nowrap; align-self: end;
+  }
+
+  .search-btn:hover { background: var(--blue); }
+  .search-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+  /* FILTER ROWS */
+  .filter-divider {
+    border: none; border-top: 1px solid var(--border); margin: 4px 0 14px;
+  }
+
+  .filter-label-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .filter-section-label {
+    font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  .filter-note {
+    font-size: 0.72rem; color: #94a3b8;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .filter-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .filter-group label {
+    font-size: 0.7rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    height: 38px; padding: 0 10px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    color: var(--text); background: var(--light); outline: none;
+    transition: border-color 0.15s; width: 100%;
+  }
+
+  .filter-group select:focus,
+  .filter-group input:focus { border-color: var(--blue); background: white; }
+
+  .filter-group input::placeholder { color: #94a3b8; }
+
+  .toggle-filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+  }
+
+  .toggle-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--light); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 6px 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+    color: var(--muted); cursor: pointer; transition: all 0.15s;
+    user-select: none;
+  }
+
+  .toggle-btn.active {
+    background: var(--ink); color: white; border-color: var(--ink);
+  }
+
+  .toggle-btn .toggle-icon { font-size: 0.85rem; }
+
+  /* Search mode indicator */
+  .search-mode {
+    display: none;
+    margin-top: 12px;
+    padding: 8px 14px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mode-badge {
+    background: var(--blue);
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .mode-badge.district { background: var(--teal); }
+
+  .hint-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+  .hint-chip {
+    background: var(--cream); border: 1px solid var(--sand);
+    border-radius: 100px; padding: 4px 12px;
+    font-size: 0.75rem; color: var(--muted);
+    cursor: pointer; transition: all 0.15s;
+  }
+
+  .hint-chip:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 44px 32px 80px; }
+
+  /* Empty */
+  .empty-state { text-align: center; padding: 80px 20px; }
+  .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.35; }
+  .empty-state h3 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 300; color: var(--ink); margin-bottom: 8px; }
+  .empty-state p { font-size: 0.9rem; color: var(--muted); }
+
+  /* Loading */
+  .loading { display: none; text-align: center; padding: 80px 20px; }
+  .loading.show { display: block; }
+  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-sub { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+
+  /* Error */
+  .error-state { display: none; background: var(--red-bg); border: 1px solid #fecaca; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; color: var(--red); font-size: 0.9rem; line-height: 1.6; }
+  .error-state.show { display: block; }
+
+  /* Results */
+  .results { display: none; }
+  .results.show { display: block; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Active filters display */
+  .active-filters {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .active-filters.show { display: flex; }
+  .active-filter-tag {
+    background: var(--ink); color: white;
+    padding: 3px 10px; border-radius: 100px;
+    font-size: 0.72rem; font-weight: 500;
+  }
+
+  /* Summary */
+  .summary-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; animation: fadeUp 0.4s ease both; }
+
+  .summary-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+  .summary-card-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .summary-card-value { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 600; color: var(--ink); letter-spacing: -0.02em; line-height: 1; }
+  .summary-card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+  .trend-up { color: var(--green); }
+  .trend-down { color: var(--red); }
+
+  /* Results grid */
+  .results-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 24px; animation: fadeUp 0.4s ease 0.1s both; }
+
+  .panel { background: white; border-radius: 14px; border: 1px solid var(--border); box-shadow: 0 1px 8px rgba(0,0,0,0.04); overflow: hidden; }
+
+  .panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-title { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .panel-badge { font-size: 0.72rem; padding: 3px 9px; border-radius: 100px; font-weight: 600; }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-neutral { background: var(--cream-dark); color: var(--muted); }
+
+  .chart-wrap { padding: 20px; height: 220px; position: relative; }
+
+  /* Affordability */
+  .afford-body { padding: 20px; }
+  .afford-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .afford-input-group label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+  .afford-input { width: 100%; height: 38px; padding: 0 12px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text); outline: none; transition: border-color 0.15s; }
+  .afford-input:focus { border-color: var(--blue); }
+  .afford-result { background: var(--cream); border-radius: 10px; padding: 14px 16px; font-size: 0.83rem; color: var(--text); line-height: 1.6; min-height: 60px; border: 1px solid var(--sand); }
+  .afford-result.green { background: var(--green-bg); border-color: #bbf7d0; color: #166534; }
+  .afford-result.red { background: var(--red-bg); border-color: #fecaca; color: var(--red); }
+  .afford-result.amber { background: var(--amber-bg); border-color: #fde68a; color: #92400e; }
+  .afford-bar-wrap { margin: 12px 0 4px; }
+  .afford-bar-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-bottom: 5px; }
+  .afford-bar { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+  .afford-fill { height: 100%; border-radius: 100px; transition: width 0.6s ease; }
+  .fill-green { background: linear-gradient(90deg, var(--teal), var(--green)); }
+  .fill-amber { background: linear-gradient(90deg, var(--amber), #f59e0b); }
+  .fill-red { background: linear-gradient(90deg, var(--red), #ef4444); }
+
+  /* Sales list */
+  .sales-panel { animation: fadeUp 0.4s ease 0.2s both; }
+
+  .sales-controls {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+
+  .ctrl-select {
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+    color: var(--text); background: white; outline: none; cursor: pointer;
+  }
+
+  .sales-count { margin-left: auto; font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+
+  .sales-head {
+    display: grid; grid-template-columns: 2.4fr 1fr 0.8fr 1fr 0.6fr;
+    padding: 10px 20px; background: var(--light); border-bottom: 1px solid var(--border);
+  }
+
+  .sales-head span { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .sale-row {
+    display: grid; grid-template-columns: 2.4fr 1fr 0.8fr 1fr 0.6fr;
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
+    align-items: center; transition: background 0.12s; animation: fadeUp 0.3s ease both;
+  }
+
+  .sale-row:last-child { border-bottom: none; }
+  .sale-row:hover { background: var(--light); }
+
+  .sale-address { font-size: 0.875rem; font-weight: 500; color: var(--ink); }
+  .sale-street { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+
+  .type-badge { display: inline-flex; align-items: center; background: var(--cream-dark); color: var(--muted); font-size: 0.7rem; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .type-badge.detached { background: #eff6ff; color: #1d4ed8; }
+  .type-badge.semi { background: #f0fdf4; color: #16a34a; }
+  .type-badge.terraced { background: #fff7ed; color: #c2410c; }
+  .type-badge.flat { background: #faf5ff; color: #7c3aed; }
+
+  .sale-date { font-size: 0.8rem; color: var(--muted); }
+  .sale-price { font-size: 0.95rem; font-weight: 600; color: var(--ink); font-family: 'Fraunces', serif; }
+
+  .estate-chip { font-size: 0.68rem; color: var(--muted); background: var(--cream-dark); padding: 2px 7px; border-radius: 4px; }
+  .estate-chip.freehold { background: #f0fdf4; color: #15803d; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 20px; border-top: 1px solid var(--border); }
+
+  .page-btn { height: 36px; padding: 0 16px; border: 1.5px solid var(--border); border-radius: 8px; background: white; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .page-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .page-info { font-size: 0.8rem; color: var(--muted); }
+
+  .no-results { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+
+  /* Footer */
+  footer { background: var(--ink); padding: 24px 32px; text-align: center; }
+  footer p { font-size: 0.78rem; color: rgba(255,255,255,0.3); line-height: 1.7; }
+  footer strong { color: rgba(255,255,255,0.6); }
+  footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+  footer a:hover { color: rgba(255,255,255,0.7); }
+
+  @media (max-width: 900px) {
+    .filters-grid { grid-template-columns: repeat(3, 1fr); }
+    .summary-bar { grid-template-columns: 1fr 1fr; }
+    .results-grid { grid-template-columns: 1fr; }
+    .sales-head, .sale-row { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    .sales-head span:last-child, .sale-row > *:last-child { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .filters-grid { grid-template-columns: repeat(2, 1fr); }
+    .sales-head, .sale-row { grid-template-columns: 2fr 1fr 1fr; }
+    .sales-head span:nth-child(4), .sale-row > *:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-pip"></span>
+    Plot <span>Worth</span>
+  </div>
+  <span class="nav-tag">Powered by HM Land Registry · Free · No account needed</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="live-dot"></span>
+      Live data · Updated monthly from Land Registry
+    </div>
+    <h1>What did homes actually<br>sell for <em>near you?</em></h1>
+    <p class="hero-sub">Search a full postcode for a specific street, or just the district (e.g. NE3) to explore an entire area. Filter by property type, price, date and more.</p>
+
+    <div class="search-wrap">
+
+      <!-- Main postcode row -->
+      <div class="search-main-row">
+        <div class="postcode-field">
+          <label>Postcode or District</label>
+          <input type="text" id="postcode-input" placeholder="e.g. NE3 (district) or NE3 4RN (street)" maxlength="10" />
+        </div>
+        <button class="search-btn" id="search-btn" onclick="doSearch()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Search
+        </button>
+      </div>
+
+      <!-- Search mode indicator -->
+      <div class="search-mode" id="search-mode" style="display:none"></div>
+
+      <hr class="filter-divider">
+
+      <!-- Filters -->
+      <div class="filter-label-row">
+        <span class="filter-section-label">Filters</span>
+        <span class="filter-note">Applied after fetching data</span>
+      </div>
+
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label>Property Type</label>
+          <select id="type-filter">
+            <option value="">All types</option>
+            <option value="detached">Detached</option>
+            <option value="semi-detached">Semi-detached</option>
+            <option value="terraced">Terraced</option>
+            <option value="flat">Flat / Apartment</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Date Range</label>
+          <select id="date-filter">
+            <option value="">All time</option>
+            <option value="1">Last 1 year</option>
+            <option value="3">Last 3 years</option>
+            <option value="5" selected>Last 5 years</option>
+            <option value="10">Last 10 years</option>
+            <option value="20">Last 20 years</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Min Price (£)</label>
+          <input type="number" id="min-price" placeholder="e.g. 100000" step="5000" />
+        </div>
+        <div class="filter-group">
+          <label>Max Price (£)</label>
+          <input type="number" id="max-price" placeholder="e.g. 400000" step="5000" />
+        </div>
+        <div class="filter-group">
+          <label>Tenure</label>
+          <select id="tenure-filter">
+            <option value="">All</option>
+            <option value="freehold">Freehold only</option>
+            <option value="leasehold">Leasehold only</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Results to fetch</label>
+          <select id="page-size-fetch">
+            <option value="50">50</option>
+            <option value="100" selected>100</option>
+            <option value="200">200</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Toggle filters -->
+      <div class="toggle-filters">
+        <button class="toggle-btn" id="toggle-newbuild" onclick="toggleFilter('newbuild')">
+          <span class="toggle-icon">🏗️</span> New builds only
+        </button>
+        <button class="toggle-btn" id="toggle-existing" onclick="toggleFilter('existing')">
+          <span class="toggle-icon">🏠</span> Existing properties only
+        </button>
+        <button class="toggle-btn active" id="toggle-standard" onclick="toggleFilter('standard')">
+          <span class="toggle-icon">✅</span> Standard transactions only
+        </button>
+      </div>
+
+      <div class="hint-chips">
+        <span class="hint-chip" onclick="quickSearch('NE3')">NE3 — Gosforth (district)</span>
+        <span class="hint-chip" onclick="quickSearch('NE25')">NE25 — Whitley Bay (district)</span>
+        <span class="hint-chip" onclick="quickSearch('NE30')">NE30 — Tynemouth (district)</span>
+        <span class="hint-chip" onclick="quickSearch('DH1')">DH1 — Durham (district)</span>
+        <span class="hint-chip" onclick="quickSearch('NE3 4RN')">NE3 4RN — specific street</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<main class="main">
+
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">🏡</div>
+    <h3>Search a postcode to get started</h3>
+    <p>Try a district like <strong>NE3</strong> for area-wide data, or a full postcode like <strong>NE3 4RN</strong> for a specific street.</p>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted); font-size:0.9rem">Fetching Land Registry data...</p>
+    <p class="loading-sub" id="loading-sub"></p>
+  </div>
+
+  <div class="error-state" id="error-state">
+    <strong>Couldn't load data.</strong> <span id="error-msg"></span>
+  </div>
+
+  <div class="results" id="results">
+
+    <!-- Active filters -->
+    <div class="active-filters" id="active-filters"></div>
+
+    <!-- Summary cards -->
+    <div class="summary-bar" id="summary-bar"></div>
+
+    <!-- Chart + Affordability -->
+    <div class="results-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Average price over time</span>
+          <span class="panel-badge badge-neutral" id="chart-badge">—</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="price-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Affordability check</span>
+        </div>
+        <div class="afford-body">
+          <div class="afford-input-row">
+            <div class="afford-input-group">
+              <label>Your budget (£)</label>
+              <input class="afford-input" type="number" id="budget-input" placeholder="300000" oninput="calcAfford()" />
+            </div>
+            <div class="afford-input-group">
+              <label>Your deposit (£)</label>
+              <input class="afford-input" type="number" id="deposit-input" placeholder="30000" oninput="calcAfford()" />
+            </div>
+          </div>
+          <div class="afford-bar-wrap" id="afford-bar-wrap" style="display:none">
+            <div class="afford-bar-labels">
+              <span id="afford-bar-left">Average price</span>
+              <span id="afford-bar-pct"></span>
+            </div>
+            <div class="afford-bar">
+              <div class="afford-fill" id="afford-fill"></div>
+            </div>
+          </div>
+          <div class="afford-result" id="afford-result">Enter your budget and deposit above to see if this area is within reach.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales list -->
+    <div class="panel sales-panel">
+      <div class="sales-controls">
+        <span class="ctrl-label">Sort by</span>
+        <select class="ctrl-select" id="sort-select" onchange="sortAndRender()">
+          <option value="date-desc">Most recent first</option>
+          <option value="date-asc">Oldest first</option>
+          <option value="price-desc">Highest price first</option>
+          <option value="price-asc">Lowest price first</option>
+        </select>
+        <span class="ctrl-label" style="margin-left:8px">Show</span>
+        <select class="ctrl-select" id="display-page-size" onchange="changeDisplaySize()">
+          <option value="10">10 per page</option>
+          <option value="25">25 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+        <span class="sales-count" id="sales-count"></span>
+      </div>
+
+      <div class="sales-head">
+        <span>Address</span>
+        <span>Type</span>
+        <span>Date</span>
+        <span>Price paid</span>
+        <span>Tenure</span>
+      </div>
+
+      <div id="sales-list"></div>
+
+      <div class="pagination" id="pagination">
+        <button class="page-btn" id="prev-btn" onclick="changePage(-1)" disabled>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Previous
+        </button>
+        <span class="page-info" id="page-info"></span>
+        <button class="page-btn" id="next-btn" onclick="changePage(1)">
+          Next
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>
+    <strong>Plot Worth</strong> — Free property price data for everyone.<br>
+    Data sourced from <a href="https://landregistry.data.gov.uk/" target="_blank">HM Land Registry Price Paid Data</a> under the Open Government Licence.
+    Results show completed sales registrations and may not include the most recent 1–3 months.
+  </p>
+</footer>
+
+<script>
+  // ── STATE ──
+  let rawSales = [];
+  let filteredSales = [];
+  let currentPage = 0;
+  let displayPageSize = 10;
+  let priceChart = null;
+  let activeToggles = { newbuild: false, existing: false, standard: true };
+
+  // ── TOGGLE FILTERS ──
+  function toggleFilter(name) {
+    // newbuild and existing are mutually exclusive
+    if (name === 'newbuild') {
+      activeToggles.newbuild = !activeToggles.newbuild;
+      if (activeToggles.newbuild) activeToggles.existing = false;
+    } else if (name === 'existing') {
+      activeToggles.existing = !activeToggles.existing;
+      if (activeToggles.existing) activeToggles.newbuild = false;
+    } else if (name === 'standard') {
+      activeToggles.standard = !activeToggles.standard;
+    }
+    document.getElementById('toggle-newbuild').className = 'toggle-btn' + (activeToggles.newbuild ? ' active' : '');
+    document.getElementById('toggle-existing').className = 'toggle-btn' + (activeToggles.existing ? ' active' : '');
+    document.getElementById('toggle-standard').className = 'toggle-btn' + (activeToggles.standard ? ' active' : '');
+    if (rawSales.length) applyFiltersAndRender();
+  }
+
+  // ── POSTCODE DETECTION ──
+  function detectSearchMode(raw) {
+    const clean = raw.trim().toUpperCase().replace(/\s+/g, ' ');
+    // Full postcode: letter(s) + number(s) + space + number + 2 letters
+    const fullPostcode = /^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/;
+    if (fullPostcode.test(clean)) return { mode: 'exact', param: 'propertyAddress.postcode', value: clean };
+    // District only: e.g. NE3, SW1A, EC1
+    const district = /^[A-Z]{1,2}\d{1,2}[A-Z]?$/;
+    if (district.test(clean)) return { mode: 'district', param: 'propertyAddress.postcode_startsWith', value: clean };
+    return null;
+  }
+
+  function updateSearchModeUI(mode, value) {
+    const el = document.getElementById('search-mode');
+    el.style.display = 'flex';
+    if (mode === 'district') {
+      el.innerHTML = `<span class="mode-badge district">District Search</span> Fetching all sales in the <strong>${value}</strong> postcode district`;
+    } else {
+      el.innerHTML = `<span class="mode-badge">Street Search</span> Fetching sales at postcode <strong>${value}</strong>`;
+    }
+  }
+
+  // ── QUICK SEARCH ──
+  function quickSearch(pc) {
+    document.getElementById('postcode-input').value = pc;
+    doSearch();
+  }
+
+  document.getElementById('postcode-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  // ── MAIN SEARCH ──
+  async function doSearch() {
+    const raw = document.getElementById('postcode-input').value.trim().toUpperCase();
+    if (!raw) return;
+
+    const detected = detectSearchMode(raw);
+    if (!detected) {
+      showError(`"${raw}" doesn't look like a valid postcode or district. Try something like <strong>NE3</strong> or <strong>NE3 4RN</strong>.`);
+      return;
+    }
+
+    updateSearchModeUI(detected.mode, detected.value);
+    rawSales = [];
+    currentPage = 0;
+    showLoading(detected.mode);
+
+    const fetchSize = parseInt(document.getElementById('page-size-fetch').value);
+
+    try {
+      const url = `https://landregistry.data.gov.uk/data/ppi/transaction-record.json?${detected.param}=${encodeURIComponent(detected.value)}&_pageSize=${fetchSize}&_sort=-transactionDate`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      const items = data?.result?.items;
+      if (!items || items.length === 0) {
+        showError(`No sales found for <strong>${detected.value}</strong>. Try a nearby postcode or check the spelling.`);
+        return;
+      }
+
+      rawSales = items.map(item => ({
+        address: `${item.propertyAddress.paon || ''} ${item.propertyAddress.street || ''}`.trim(),
+        postcode: item.propertyAddress.postcode || raw,
+        town: item.propertyAddress.town || item.propertyAddress.locality || '',
+        price: item.pricePaid,
+        date: item.transactionDate,
+        dateObj: new Date(item.transactionDate),
+        type: extractLabel(item.propertyType),
+        estate: extractLabel(item.estateType),
+        newBuild: item.newBuild === true,
+        category: extractLabel(item.transactionCategory),
+      }));
+
+      applyFiltersAndRender();
+
+    } catch (err) {
+      showError(`Could not connect to Land Registry. ${err.message}. Check your connection and try again.`);
+    }
+  }
+
+  // ── FILTER LOGIC ──
+  function applyFiltersAndRender() {
+    const typeVal = document.getElementById('type-filter').value.toLowerCase();
+    const dateYears = parseInt(document.getElementById('date-filter').value) || 0;
+    const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
+    const tenureVal = document.getElementById('tenure-filter').value.toLowerCase();
+    const cutoff = dateYears ? new Date(new Date().setFullYear(new Date().getFullYear() - dateYears)) : null;
+
+    filteredSales = rawSales.filter(s => {
+      if (typeVal && !s.type.toLowerCase().includes(typeVal.replace('-', ' '))) return false;
+      if (cutoff && s.dateObj < cutoff) return false;
+      if (s.price < minPrice) return false;
+      if (s.price > maxPrice) return false;
+      if (tenureVal === 'freehold' && !s.estate.toLowerCase().includes('freehold')) return false;
+      if (tenureVal === 'leasehold' && !s.estate.toLowerCase().includes('leasehold')) return false;
+      if (activeToggles.newbuild && !s.newBuild) return false;
+      if (activeToggles.existing && s.newBuild) return false;
+      if (activeToggles.standard && s.category.toLowerCase().includes('additional')) return false;
+      return true;
+    });
+
+    currentPage = 0;
+    sortAndRender(false);
+    showResults();
+    renderActiveFilters(typeVal, dateYears, minPrice, maxPrice, tenureVal);
+  }
+
+  function renderActiveFilters(type, years, minP, maxP, tenure) {
+    const tags = [];
+    if (type) tags.push(type.charAt(0).toUpperCase() + type.slice(1));
+    if (years) tags.push(`Last ${years} year${years > 1 ? 's' : ''}`);
+    if (minP) tags.push(`Min £${minP.toLocaleString()}`);
+    if (maxP !== Infinity) tags.push(`Max £${maxP.toLocaleString()}`);
+    if (tenure) tags.push(tenure.charAt(0).toUpperCase() + tenure.slice(1));
+    if (activeToggles.newbuild) tags.push('New builds only');
+    if (activeToggles.existing) tags.push('Existing only');
+    if (activeToggles.standard) tags.push('Standard transactions');
+
+    const el = document.getElementById('active-filters');
+    if (tags.length) {
+      el.classList.add('show');
+      el.innerHTML = '<span style="font-weight:500;color:var(--text)">Active filters:</span> ' + tags.map(t => `<span class="active-filter-tag">${t}</span>`).join('');
+    } else {
+      el.classList.remove('show');
+    }
+  }
+
+  function sortAndRender(render = true) {
+    const val = document.getElementById('sort-select').value;
+    filteredSales.sort((a, b) => {
+      if (val === 'date-desc') return b.dateObj - a.dateObj;
+      if (val === 'date-asc') return a.dateObj - b.dateObj;
+      if (val === 'price-desc') return b.price - a.price;
+      if (val === 'price-asc') return a.price - b.price;
+      return 0;
+    });
+    if (render) { currentPage = 0; renderSales(); }
+  }
+
+  function changeDisplaySize() {
+    displayPageSize = parseInt(document.getElementById('display-page-size').value);
+    currentPage = 0;
+    renderSales();
+  }
+
+  // ── DISPLAY STATE ──
+  function showLoading(mode) {
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('error-state').classList.remove('show');
+    document.getElementById('search-btn').disabled = true;
+    document.getElementById('loading-sub').textContent =
+      mode === 'district' ? 'District searches may take a moment — fetching up to ' + document.getElementById('page-size-fetch').value + ' records...' : '';
+  }
+
+  function showError(msg) {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('error-state').classList.add('show');
+    document.getElementById('error-msg').innerHTML = msg;
+    document.getElementById('search-btn').disabled = false;
+  }
+
+  function showResults() {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('error-state').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+    document.getElementById('search-btn').disabled = false;
+    renderSummary();
+    renderChart();
+    renderSales();
+    calcAfford();
+  }
+
+  // ── SUMMARY ──
+  function renderSummary() {
+    if (!filteredSales.length) return;
+    const prices = filteredSales.map(s => s.price);
+    const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+    const highest = Math.max(...prices);
+    const lowest = Math.min(...prices);
+
+    const chrono = [...filteredSales].sort((a,b) => a.dateObj - b.dateObj);
+    const half = Math.floor(chrono.length / 2);
+    let trendHtml = '—';
+    if (half > 1) {
+      const oldAvg = chrono.slice(0,half).reduce((a,b) => a+b.price,0) / half;
+      const newAvg = chrono.slice(half).reduce((a,b) => a+b.price,0) / (chrono.length - half);
+      const pct = ((newAvg - oldAvg) / oldAvg * 100).toFixed(1);
+      const cls = pct > 0 ? 'trend-up' : 'trend-down';
+      trendHtml = `<span class="${cls}">${pct > 0 ? '↑' : '↓'} ${Math.abs(pct)}%</span>`;
+    }
+
+    const newest = filteredSales.reduce((a,b) => a.dateObj > b.dateObj ? a : b);
+
+    document.getElementById('summary-bar').innerHTML = `
+      <div class="summary-card">
+        <div class="summary-card-label">Average sold price</div>
+        <div class="summary-card-value">${fmt(avg)}</div>
+        <div class="summary-card-sub">${filteredSales.length} sales in filtered results</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">Price trend</div>
+        <div class="summary-card-value" style="font-size:1.4rem;margin-top:4px">${trendHtml}</div>
+        <div class="summary-card-sub">Newer vs older half of results</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">Highest sale</div>
+        <div class="summary-card-value">${fmt(highest)}</div>
+        <div class="summary-card-sub">In filtered results</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">Most recent sale</div>
+        <div class="summary-card-value" style="font-size:1.1rem;margin-top:4px">${formatDate(newest.date)}</div>
+        <div class="summary-card-sub">${fmt(newest.price)} · ${newest.address}</div>
+      </div>
+    `;
+  }
+
+  // ── CHART ──
+  function renderChart() {
+    const chrono = [...filteredSales].sort((a,b) => a.dateObj - b.dateObj);
+    const byYear = {};
+    chrono.forEach(s => {
+      const yr = s.dateObj.getFullYear();
+      if (!byYear[yr]) byYear[yr] = [];
+      byYear[yr].push(s.price);
+    });
+    const years = Object.keys(byYear).sort();
+    const avgs = years.map(yr => Math.round(byYear[yr].reduce((a,b)=>a+b,0)/byYear[yr].length));
+    const counts = years.map(yr => byYear[yr].length);
+
+    if (avgs.length >= 2) {
+      const change = ((avgs[avgs.length-1] - avgs[0]) / avgs[0] * 100).toFixed(1);
+      const badge = document.getElementById('chart-badge');
+      if (parseFloat(change) > 0) {
+        badge.textContent = `↑ ${change}% since ${years[0]}`;
+        badge.className = 'panel-badge badge-green';
+      } else {
+        badge.textContent = `↓ ${Math.abs(change)}% since ${years[0]}`;
+        badge.className = 'panel-badge badge-red';
+      }
+    }
+
+    if (priceChart) priceChart.destroy();
+    const ctx = document.getElementById('price-chart').getContext('2d');
+    priceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: years,
+        datasets: [{
+          label: 'Avg price',
+          data: avgs,
+          borderColor: '#1d4ed8',
+          backgroundColor: 'rgba(29,78,216,0.07)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#1d4ed8',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          tension: 0.35,
+          fill: true,
+          yAxisID: 'y',
+        }, {
+          label: 'Sales count',
+          data: counts,
+          borderColor: 'rgba(13,148,136,0.5)',
+          backgroundColor: 'rgba(13,148,136,0.04)',
+          borderWidth: 1.5,
+          borderDash: [4,3],
+          pointRadius: 3,
+          tension: 0.35,
+          fill: false,
+          yAxisID: 'y2',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { font: { size: 11, family: 'DM Sans' }, boxWidth: 12, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.datasetIndex === 0 ? ' Avg: ' + fmt(ctx.raw) : ' Sales: ' + ctx.raw
+            },
+            backgroundColor: '#0e1a2b', padding: 10, cornerRadius: 8,
+          }
+        },
+        scales: {
+          y: {
+            position: 'left',
+            ticks: { callback: v => '£' + (v >= 1000000 ? (v/1000000).toFixed(1)+'m' : (v/1000).toFixed(0)+'k'), font: { size: 10, family: 'DM Sans' }, color: '#94a3b8' },
+            grid: { color: '#f1f5f9' }
+          },
+          y2: {
+            position: 'right',
+            ticks: { font: { size: 10, family: 'DM Sans' }, color: '#94a3b8' },
+            grid: { display: false }
+          },
+          x: {
+            ticks: { font: { size: 10, family: 'DM Sans' }, color: '#94a3b8' },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  // ── AFFORDABILITY ──
+  function calcAfford() {
+    const budget = parseFloat(document.getElementById('budget-input').value);
+    const deposit = parseFloat(document.getElementById('deposit-input').value) || 0;
+    const resultEl = document.getElementById('afford-result');
+    const barWrap = document.getElementById('afford-bar-wrap');
+    const fill = document.getElementById('afford-fill');
+
+    if (!filteredSales.length) return;
+    const avg = filteredSales.reduce((a,b) => a+b.price, 0) / filteredSales.length;
+
+    if (!budget || isNaN(budget)) {
+      resultEl.textContent = 'Enter your budget and deposit above to see if this area is within reach.';
+      resultEl.className = 'afford-result';
+      barWrap.style.display = 'none';
+      return;
+    }
+
+    const pct = Math.min((avg / budget) * 100, 120).toFixed(0);
+    const diff = budget - avg;
+    barWrap.style.display = 'block';
+    fill.style.width = Math.min(pct, 100) + '%';
+    document.getElementById('afford-bar-pct').textContent = pct + '% of budget';
+    document.getElementById('afford-bar-left').textContent = `Avg ${fmt(Math.round(avg))}`;
+
+    if (avg <= budget * 0.85) {
+      resultEl.className = 'afford-result green';
+      fill.className = 'afford-fill fill-green';
+      resultEl.innerHTML = `✅ <strong>Comfortably within budget.</strong> Average prices here are ${fmt(Math.round(avg))}, giving you ${fmt(Math.round(diff))} headroom on your ${fmt(budget)} budget${deposit ? ` with a ${fmt(deposit)} deposit` : ''}.`;
+    } else if (avg <= budget) {
+      resultEl.className = 'afford-result amber';
+      fill.className = 'afford-fill fill-amber';
+      resultEl.innerHTML = `⚠️ <strong>Within budget but tight.</strong> The average of ${fmt(Math.round(avg))} is close to your ${fmt(budget)} limit. You may have limited choice — consider nearby postcodes or adjusting your filters.`;
+    } else {
+      resultEl.className = 'afford-result red';
+      fill.className = 'afford-fill fill-red';
+      resultEl.innerHTML = `❌ <strong>Above your budget.</strong> Average prices of ${fmt(Math.round(avg))} exceed your ${fmt(budget)} budget by ${fmt(Math.round(avg - budget))}. Try filtering by a lower price range or exploring a neighbouring postcode.`;
+    }
+  }
+
+  // ── SALES LIST ──
+  function renderSales() {
+    displayPageSize = parseInt(document.getElementById('display-page-size').value);
+    const list = document.getElementById('sales-list');
+    const start = currentPage * displayPageSize;
+    const page = filteredSales.slice(start, start + displayPageSize);
+
+    document.getElementById('sales-count').textContent =
+      `${filteredSales.length} of ${rawSales.length} sales (filtered)`;
+
+    if (page.length === 0) {
+      list.innerHTML = '<div class="no-results">No sales match the current filters. Try adjusting the date range, price range or property type.</div>';
+      document.getElementById('pagination').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('pagination').style.display = 'flex';
+
+    list.innerHTML = page.map((s, i) => {
+      const typeCls = s.type.toLowerCase().includes('detached') && !s.type.toLowerCase().includes('semi') ? 'detached'
+        : s.type.toLowerCase().includes('semi') ? 'semi'
+        : s.type.toLowerCase().includes('terrace') ? 'terraced'
+        : s.type.toLowerCase().includes('flat') ? 'flat' : '';
+      const typeShort = s.type.toLowerCase().includes('semi') ? 'Semi-D'
+        : s.type.toLowerCase().includes('detached') && !s.type.toLowerCase().includes('semi') ? 'Detached'
+        : s.type.toLowerCase().includes('terrace') ? 'Terraced'
+        : s.type.toLowerCase().includes('flat') ? 'Flat' : s.type;
+      const freehold = s.estate.toLowerCase().includes('freehold');
+      return `
+        <div class="sale-row" style="animation-delay:${i*0.025}s">
+          <div>
+            <div class="sale-address">${s.address}${s.newBuild ? ' <span style="font-size:0.68rem;background:#fef9c3;color:#854d0e;padding:2px 6px;border-radius:4px;margin-left:4px">New build</span>' : ''}</div>
+            <div class="sale-street">${s.postcode}</div>
+          </div>
+          <div><span class="type-badge ${typeCls}">${typeShort}</span></div>
+          <div class="sale-date">${formatDate(s.date)}</div>
+          <div class="sale-price">${fmt(s.price)}</div>
+          <div><span class="estate-chip ${freehold ? 'freehold' : ''}">${freehold ? 'Freehold' : 'Leasehold'}</span></div>
+        </div>`;
+    }).join('');
+
+    const totalPages = Math.ceil(filteredSales.length / displayPageSize);
+    document.getElementById('prev-btn').disabled = currentPage === 0;
+    document.getElementById('next-btn').disabled = currentPage >= totalPages - 1;
+    document.getElementById('page-info').textContent = `Page ${currentPage+1} of ${totalPages}`;
+  }
+
+  function changePage(dir) {
+    const totalPages = Math.ceil(filteredSales.length / displayPageSize);
+    currentPage = Math.max(0, Math.min(currentPage + dir, totalPages - 1));
+    renderSales();
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── HELPERS ──
+  function extractLabel(obj) {
+    if (!obj) return 'Unknown';
+    const src = obj.prefLabel || obj.label;
+    if (!src) return 'Unknown';
+    if (Array.isArray(src)) return src[0]?._value || 'Unknown';
+    return src._value || 'Unknown';
+  }
+
+  function fmt(n) { return '£' + Math.round(n).toLocaleString('en-GB'); }
+
+  function formatDate(dateStr) {
+    try { return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+    catch { return dateStr; }
+  }
+</script>
+</body>
+</html>
