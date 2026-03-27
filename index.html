@@ -6,6 +6,8 @@
 <title>Plot Worth — What did homes sell for near you?</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -185,6 +187,15 @@ footer strong{color:rgba(255,255,255,.6)}
 footer a{color:rgba(255,255,255,.4);text-decoration:none}
 footer a:hover{color:rgba(255,255,255,.7)}
 
+.map-panel{animation:fadeUp .4s ease .15s both;margin-bottom:24px}
+.map-wrap{height:420px;width:100%;border-radius:0 0 14px 14px;overflow:hidden;position:relative;z-index:0}
+#sale-map{height:100%;width:100%}
+.map-legend{display:flex;gap:16px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--light);align-items:center}
+.map-legend-label{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.map-no-data{height:420px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.9rem;background:var(--light)}
+
 @media(max-width:900px){.filters-grid{grid-template-columns:repeat(3,1fr)}.summary-bar{grid-template-columns:1fr 1fr}.results-grid{grid-template-columns:1fr}.how-strip{gap:30px}}
 @media(max-width:600px){.filters-grid{grid-template-columns:repeat(2,1fr)}.sales-head,.sale-row{grid-template-columns:2fr 1fr 1fr}.sales-head span:nth-child(n+4),.sale-row>*:nth-child(n+4){display:none}}
 </style>
@@ -324,7 +335,25 @@ footer a:hover{color:rgba(255,255,255,.7)}
 
     <div class="summary-bar" id="summary-bar"></div>
 
-    <div class="results-grid">
+    <!-- MAP PANEL -->
+    <div class="panel map-panel" id="map-panel">
+      <div class="panel-header">
+        <span class="panel-title">Sales map</span>
+        <span class="panel-badge badge-neutral" id="map-badge">Loading...</span>
+      </div>
+      <div class="map-legend">
+        <span class="map-legend-label">Property type</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#1d4ed8"></span>Detached</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#16a34a"></span>Semi-D</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#c2410c"></span>Terraced</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>Flat</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span>Other</span>
+      </div>
+      <div class="map-wrap">
+        <div id="sale-map"></div>
+        <div class="map-no-data" id="map-no-data" style="display:none">No location data available for these results</div>
+      </div>
+    </div>
       <div class="panel">
         <div class="panel-header">
           <span class="panel-title">Average price over time</span>
@@ -397,6 +426,100 @@ footer a:hover{color:rgba(255,255,255,.7)}
 </footer>
 
 <script>
+// ── MAP ──
+let saleMap=null,mapMarkers=[];
+const TYPE_COLOURS={detached:'#1d4ed8',semi:'#16a34a',terraced:'#c2410c',flat:'#7c3aed',other:'#64748b'};
+
+function getTypeColour(type){
+  const t=type.toLowerCase();
+  if(t.includes('semi'))return TYPE_COLOURS.semi;
+  if(t.includes('detached')&&!t.includes('semi'))return TYPE_COLOURS.detached;
+  if(t.includes('terrace'))return TYPE_COLOURS.terraced;
+  if(t.includes('flat')||t.includes('maisonette'))return TYPE_COLOURS.flat;
+  return TYPE_COLOURS.other;
+}
+
+function makeCircleIcon(colour){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:12px;height:12px;border-radius:50%;background:${colour};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer"></div>`,
+    iconSize:[12,12],iconAnchor:[6,6],popupAnchor:[0,-10]
+  });
+}
+
+async function renderMap(sales){
+  const mapEl=document.getElementById('sale-map');
+  const noData=document.getElementById('map-no-data');
+  const badge=document.getElementById('map-badge');
+
+  if(!saleMap){
+    saleMap=L.map('sale-map',{zoomControl:true,scrollWheelZoom:false});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:18
+    }).addTo(saleMap);
+  }
+
+  mapMarkers.forEach(m=>saleMap.removeLayer(m));
+  mapMarkers=[];
+  badge.textContent='Mapping sales...';
+  badge.className='panel-badge badge-neutral';
+
+  const uniquePostcodes=[...new Set(sales.map(s=>s.postcode).filter(Boolean))];
+  if(!uniquePostcodes.length){noData.style.display='flex';mapEl.style.display='none';badge.textContent='No location data';return;}
+
+  const postcodeMap={};
+  try{
+    const batches=[];
+    for(let i=0;i<uniquePostcodes.length;i+=100)batches.push(uniquePostcodes.slice(i,i+100));
+    for(const batch of batches){
+      const res=await fetch('https://api.postcodes.io/postcodes',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({postcodes:batch})
+      });
+      const data=await res.json();
+      if(data.result)data.result.forEach(r=>{
+        if(r.result?.latitude&&r.result?.longitude)
+          postcodeMap[r.query.toUpperCase()]={lat:r.result.latitude,lng:r.result.longitude};
+      });
+    }
+  }catch(e){console.warn('Geocoding failed:',e);}
+
+  const bounds=[];
+  sales.forEach(sale=>{
+    const coords=postcodeMap[sale.postcode?.toUpperCase()];
+    if(!coords)return;
+    const colour=getTypeColour(sale.type);
+    const typeShort=sale.type.toLowerCase().includes('semi')?'Semi-D':
+      sale.type.toLowerCase().includes('detached')&&!sale.type.toLowerCase().includes('semi')?'Detached':
+      sale.type.toLowerCase().includes('terrace')?'Terraced':
+      sale.type.toLowerCase().includes('flat')?'Flat':sale.type;
+    const marker=L.marker([coords.lat,coords.lng],{icon:makeCircleIcon(colour)});
+    marker.bindPopup(`<div style="font-family:'DM Sans',sans-serif;min-width:180px">
+      <div style="font-weight:600;font-size:.85rem;color:#0e1a2b;margin-bottom:3px">${sale.address}</div>
+      <div style="font-size:.73rem;color:#64748b;margin-bottom:8px">${sale.postcode}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#0e1a2b;margin-bottom:6px">${fmt(sale.price)}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <span style="font-size:.7rem;background:#f1f5f9;padding:2px 8px;border-radius:4px;color:#475569">${typeShort}</span>
+        <span style="font-size:.7rem;background:#f1f5f9;padding:2px 8px;border-radius:4px;color:#475569">${formatDate(sale.date)}</span>
+        ${sale.newBuild?'<span style="font-size:.7rem;background:#fef9c3;padding:2px 8px;border-radius:4px;color:#854d0e">New build</span>':''}
+      </div></div>`,{maxWidth:240});
+    marker.addTo(saleMap);
+    mapMarkers.push(marker);
+    bounds.push([coords.lat,coords.lng]);
+  });
+
+  if(bounds.length){
+    noData.style.display='none';mapEl.style.display='block';
+    saleMap.fitBounds(bounds,{padding:[30,30],maxZoom:15});
+    badge.textContent=`${bounds.length} properties mapped`;
+    badge.className='panel-badge badge-green';
+  } else {
+    noData.style.display='flex';mapEl.style.display='none';
+    badge.textContent='No location data';badge.className='panel-badge badge-neutral';
+  }
+  setTimeout(()=>saleMap.invalidateSize(),150);
+}
+
 // ── OUTCODE → TOWN LOOKUP TABLE ──
 // Maps postcode districts to their Land Registry town names
 const OUTCODE_TOWNS = {
@@ -642,6 +765,7 @@ function applyFiltersAndRender(){
   currentPage=0;
   sortAndRender(false);
   showResults();
+  renderMap(filteredSales);
   // Filter tags
   const tags=[];
   if(typeVal)tags.push(typeVal.charAt(0).toUpperCase()+typeVal.slice(1));
@@ -690,6 +814,7 @@ function showResults(){
   document.getElementById('results').classList.add('show');
   document.getElementById('search-btn').disabled=false;
   renderSummary();renderChart();renderSales();calcAfford();
+  renderMap(filteredSales);
 }
 
 // ── SUMMARY ──
