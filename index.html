@@ -11,11 +11,11 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#2c2c2c; --blue:#6b7c6e; --blue-light:#8a9e8d; --teal:#7a9e7e;
-  --cream:#fdf8f3; --cream-dark:#f5ede0; --sand:#e8ddd0; --text:#2c2c2c;
-  --muted:#7a7065; --light:#faf5ef; --border:#e8ddd0;
-  --green:#6b8f6e; --green-bg:#f0f5f0; --red:#b85c4a; --red-bg:#fdf0ee;
-  --amber:#b08050; --amber-bg:#fdf5e8;
+  --ink:#2c2c2c;--blue:#6b7c6e;--blue-light:#8a9e8d;--teal:#7a9e7e;
+  --cream:#fdf8f3;--cream-dark:#f5ede0;--sand:#e8ddd0;--text:#2c2c2c;
+  --muted:#7a7065;--light:#faf5ef;--border:#e8ddd0;
+  --green:#6b8f6e;--green-bg:#f0f5f0;--red:#b85c4a;--red-bg:#fdf0ee;
+  --amber:#b08050;--amber-bg:#fdf5e8;
 }
 html{scroll-behavior:smooth}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
@@ -28,7 +28,7 @@ nav{background:var(--ink);padding:0 32px;height:58px;display:flex;align-items:ce
 
 .hero{background:var(--ink);padding:48px 32px 64px;position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:40px;background:var(--cream);clip-path:ellipse(55% 100% at 50% 100%)}
-.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 10% 50%,rgba(29,78,216,.2) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 90% 20%,rgba(13,148,136,.1) 0%,transparent 50%);pointer-events:none}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 10% 50%,rgba(107,124,110,.25) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 90% 20%,rgba(122,158,126,.12) 0%,transparent 50%);pointer-events:none}
 .hero-inner{max-width:720px;margin:0 auto;position:relative;z-index:2;text-align:center}
 
 .hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:5px 14px;font-size:.73rem;color:rgba(255,255,255,.5);letter-spacing:.07em;text-transform:uppercase;margin-bottom:20px}
@@ -197,14 +197,16 @@ footer a:hover{color:rgba(255,255,255,.7)}
 .map-no-data{height:420px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.9rem;background:var(--light)}
 
 @media(max-width:900px){.filters-grid{grid-template-columns:repeat(3,1fr)}.summary-bar{grid-template-columns:1fr 1fr}.results-grid{grid-template-columns:1fr}.how-strip{gap:30px}}
-@media(max-width:600px){.filters-grid{grid-template-columns:repeat(2,1fr)}.sales-head,.sale-row{grid-template-columns:2fr 1fr 1fr}.sales-head span:nth-child(n+4),.sale-row>*:nth-child(n+4){display:none}}
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FBJSBNR1D3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-FBJSBNR1D3');
-</script>
+@media(max-width:600px){
+  .filters-grid{grid-template-columns:repeat(2,1fr)}
+  .sales-head,.sale-row{grid-template-columns:1fr auto}
+  .sales-head span:nth-child(n+3),.sale-row>*:nth-child(n+3){display:none}
+  .sale-price{font-size:.85rem}
+  .summary-bar{grid-template-columns:1fr 1fr}
+  .search-top-row{grid-template-columns:1fr}
+  .search-btn{width:100%;justify-content:center}
+}
+</style>
 </head>
 <body>
 
@@ -217,7 +219,7 @@ footer a:hover{color:rgba(255,255,255,.7)}
   <div class="hero-bg"></div>
   <div class="hero-inner">
     <h1>What did homes<br>sell for <em>near you?</em></h1>
-    <p class="hero-sub">Search a full postcode like <strong style="color:rgba(255,255,255,.7)">NE25 8TH</strong> for a specific street, or a district like <strong style="color:rgba(255,255,255,.7)">NE25</strong> to explore an entire area.</p>
+    <p class="hero-sub">Know exactly what homes are selling for before you make your biggest financial decision.</p>
 
     <div class="search-wrap">
       <div class="search-top-row">
@@ -302,17 +304,17 @@ footer a:hover{color:rgba(255,255,255,.7)}
 </div>
 
 <div class="how-strip">
-  <div class="how-item"><span class="how-icon">🔍</span><div><strong>Full postcode</strong>e.g. NE25 8TH — one street</div></div>
-  <div class="how-item"><span class="how-icon">🗺️</span><div><strong>District search</strong>e.g. NE25 — entire area</div></div>
-  <div class="how-item"><span class="how-icon">💷</span><div><strong>Check affordability</strong>Enter your budget</div></div>
-  <div class="how-item"><span class="how-icon">📈</span><div><strong>Spot trends</strong>See prices over time</div></div>
+  <div class="how-item"><span class="how-icon">🔍</span><div><strong>Search any postcode</strong>Full postcode or whole district</div></div>
+  <div class="how-item"><span class="how-icon">📍</span><div><strong>See what sold</strong>Real prices, real streets</div></div>
+  <div class="how-item"><span class="how-icon">💷</span><div><strong>Check your budget</strong>See if an area is within reach</div></div>
+  <div class="how-item"><span class="how-icon">📈</span><div><strong>Spot the trends</strong>Is the area going up or down?</div></div>
 </div>
 
 <main class="main">
   <div class="empty-state" id="empty-state">
     <div class="empty-icon">🏡</div>
-    <h3>Search any postcode or district</h3>
-    <p>Enter a full postcode like <strong>NE25 8TH</strong> for a specific street, or just the district like <strong>NE25</strong> to explore Whitley Bay as a whole. Both pull real data straight from HM Land Registry.</p>
+    <h3>Where are you looking?</h3>
+    <p>Enter a full postcode like <strong>NE25 8TH</strong> to see what sold on a specific street, or just the district like <strong>NE25</strong> to explore a whole area. All data comes straight from HM Land Registry — free, no account needed.</p>
   </div>
 
   <div class="loading" id="loading">
@@ -367,7 +369,7 @@ footer a:hover{color:rgba(255,255,255,.7)}
         <div class="chart-wrap"><canvas id="price-chart"></canvas></div>
       </div>
       <div class="panel">
-        <div class="panel-header"><span class="panel-title">Affordability check</span></div>
+        <div class="panel-header"><span class="panel-title">Can I afford this area?</span></div>
         <div class="afford-body">
           <div class="afford-input-row">
             <div class="afford-input-group">
