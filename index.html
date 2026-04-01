@@ -1995,6 +1995,7 @@
             detected.mode === "district"
               ? `🗺️ District search — all postcodes starting <strong>${detected.value}</strong>`
               : `📍 Street search — postcode <strong>${detected.value}</strong>`;
+              setTimeout(() => document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         } catch (err) {
           showError(
             `Could not load data for <strong>${detected.value}</strong>. ${err.message}. Please try again in a moment.`,
