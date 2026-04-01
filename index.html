@@ -1131,9 +1131,9 @@
               </select>
             </div>
             <div class="filter-group">
-              <label>Date Range</label>
+              <label>Sold in last...</label>
               <select id="date-filter">
-                <option value="">All time</option>
+                <option value="">Any time</option>
                 <option value="1">Last 1 year</option>
                 <option value="3">Last 3 years</option>
                 <option value="5" selected>Last 5 years</option>
@@ -1988,8 +1988,9 @@
           const townName = rawSales[0]?.town ? titleCase(rawSales[0].town) : "";
           document.getElementById("result-title").textContent =
             `${label}${townName && detected.mode === "district" ? "" : townName ? " — " + townName : ""}`;
+          const dateYears = parseInt(document.getElementById('date-filter').value) || 0;
           document.getElementById("result-subtitle").textContent =
-            `${rawSales.length} sales found · Filtered to last 5 years by default`;
+            `${rawSales.length} sales found${dateYears ? ' · Filtered to last ' + dateYears + ' year' + (dateYears > 1 ? 's' : '') : ''}`;
           document.getElementById("result-mode-tag").innerHTML =
             detected.mode === "district"
               ? `🗺️ District search — all postcodes starting <strong>${detected.value}</strong>`
