@@ -1798,17 +1798,27 @@
       let currentSearchMode = ""; // 'postcode' or 'district'
       const PROXY = "https://plotworth-provy.ryleybaird2.workers.dev";
 
-      // ── INPUT DETECTION ──
-      function detectInput(raw) {
-        const clean = raw.trim().toUpperCase().replace(/\s+/g, " ");
-        // Full postcode: e.g. NE25 8TH
-        if (/^[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2}$/.test(clean))
-          return { mode: "postcode", value: clean };
-        // District/outcode: e.g. NE25, DH1, SR1
-        if (/^[A-Z]{1,2}\d{1,2}[A-Z]?$/.test(clean))
-          return { mode: "district", value: clean };
-        return null;
-      }
+    function normalisePostcode(raw) {
+      const stripped = raw.trim().toUpperCase().replace(/\s+/g, "");
+      // Full postcode without space e.g. NE258TH → NE25 8TH
+      const fullMatch = stripped.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)(\d[A-Z]{2})$/);
+      if (fullMatch) return fullMatch[1] + " " + fullMatch[2];
+      // Partial e.g. NE244 → just return district NE24
+      const partialMatch = stripped.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)(\d)$/);
+      if (partialMatch) return partialMatch[1];
+      return raw.trim().toUpperCase().replace(/\s+/g, " ");
+    }
+
+    function detectInput(raw) {
+      const normalised = normalisePostcode(raw);
+      // Full postcode: e.g. NE25 8TH
+      if (/^[A-Z]{1,2}\d{1,2}[A-Z]?\s\d[A-Z]{2}$/.test(normalised))
+        return { mode: "postcode", value: normalised };
+      // District/outcode: e.g. NE25, DH1, SR1
+      if (/^[A-Z]{1,2}\d{1,2}[A-Z]?$/.test(normalised))
+        return { mode: "district", value: normalised };
+      return null;
+    }
 
       function updateModeUI(detected) {
         const badge = document.getElementById("search-mode-badge");
