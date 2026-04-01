@@ -2034,7 +2034,7 @@
         renderSummary();
         renderChart();
         renderSales();
-        calcAfford();
+        renderAreaStats()
         renderMap(filteredSales);
       }
 
@@ -2225,7 +2225,7 @@
           </div>
         `).join('');
       }
-      
+
       // ── SALES LIST ──
       function renderSales() {
         const displaySize = parseInt(
