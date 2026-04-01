@@ -691,95 +691,17 @@
         height: 220px;
         position: relative;
       }
-
-      .afford-body {
-        padding: 20px;
-      }
-      .afford-input-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 14px;
-      }
-      .afford-input-group label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        display: block;
-        margin-bottom: 5px;
-      }
-      .afford-input {
-        width: 100%;
-        height: 38px;
-        padding: 0 12px;
-        border: 1.5px solid var(--border);
-        border-radius: 8px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 0.875rem;
-        color: var(--text);
-        outline: none;
-        transition: border-color 0.15s;
-      }
-      .afford-input:focus {
-        border-color: var(--blue);
-      }
-      .afford-result {
-        background: var(--cream);
-        border-radius: 10px;
-        padding: 14px 16px;
-        font-size: 0.83rem;
-        color: var(--text);
-        line-height: 1.6;
-        min-height: 70px;
-        border: 1px solid var(--sand);
-      }
-      .afford-result.green {
-        background: var(--green-bg);
-        border-color: #bbf7d0;
-        color: #166534;
-      }
-      .afford-result.red {
-        background: var(--red-bg);
-        border-color: #fecaca;
-        color: var(--red);
-      }
-      .afford-result.amber {
-        background: var(--amber-bg);
-        border-color: #fde68a;
-        color: #92400e;
-      }
-      .afford-bar-wrap {
-        margin: 12px 0 4px;
-      }
-      .afford-bar-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.7rem;
-        color: var(--muted);
-        margin-bottom: 5px;
-      }
-      .afford-bar {
-        height: 8px;
-        background: var(--border);
-        border-radius: 100px;
-        overflow: hidden;
-      }
-      .afford-fill {
-        height: 100%;
-        border-radius: 100px;
-        transition: width 0.6s ease;
-      }
-      .fill-green {
-        background: linear-gradient(90deg, var(--teal), var(--green));
-      }
-      .fill-amber {
-        background: linear-gradient(90deg, var(--amber), #f59e0b);
-      }
-      .fill-red {
-        background: linear-gradient(90deg, var(--red), #ef4444);
-      }
+      .area-stats-body { padding: 16px 20px; display: flex; flex-direction: column; }
+      .area-stat { padding: 12px 0; border-bottom: 1px solid var(--border); }
+      .area-stat:last-child { border-bottom: none; }
+      .area-stat-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+      .area-stat-value { font-family: "Fraunces", serif; font-size: 1.2rem; font-weight: 400; color: var(--ink); line-height: 1.2; }
+      .area-stat-sub { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+      .breakdown-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; margin-bottom: 5px; }
+      .breakdown-type { color: var(--muted); min-width: 70px; }
+      .breakdown-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+      .breakdown-bar-fill { height: 100%; border-radius: 2px; background: var(--blue); }
+      .breakdown-price { font-weight: 600; color: var(--ink); min-width: 70px; text-align: right; font-size: 0.78rem; }
 
       .sales-panel {
         animation: fadeUp 0.4s ease 0.2s both;
@@ -1341,47 +1263,26 @@
           </div>
           <div class="panel">
             <div class="panel-header">
-              <span class="panel-title">Can I afford this area?</span>
+              <span class="panel-title">Area stats</span>
             </div>
-            <div class="afford-body">
-              <div class="afford-input-row">
-                <div class="afford-input-group">
-                  <label>Your budget (£)</label>
-                  <input
-                    class="afford-input"
-                    type="number"
-                    id="budget-input"
-                    placeholder="e.g. 300000"
-                    oninput="calcAfford()"
-                  />
-                </div>
-                <div class="afford-input-group">
-                  <label>Your deposit (£)</label>
-                  <input
-                    class="afford-input"
-                    type="number"
-                    id="deposit-input"
-                    placeholder="e.g. 30000"
-                    oninput="calcAfford()"
-                  />
-                </div>
+            <div class="area-stats-body">
+              <div class="area-stat">
+                <div class="area-stat-label">Total sales in results</div>
+                <div class="area-stat-value" id="stat-total">—</div>
               </div>
-              <div
-                class="afford-bar-wrap"
-                id="afford-bar-wrap"
-                style="display: none"
-              >
-                <div class="afford-bar-labels">
-                  <span id="afford-bar-left">Average price</span
-                  ><span id="afford-bar-pct"></span>
-                </div>
-                <div class="afford-bar">
-                  <div class="afford-fill" id="afford-fill"></div>
-                </div>
+              <div class="area-stat">
+                <div class="area-stat-label">Most active street</div>
+                <div class="area-stat-value" id="stat-street">—</div>
+                <div class="area-stat-sub" id="stat-street-sub"></div>
               </div>
-              <div class="afford-result" id="afford-result">
-                Enter your budget and deposit above to see if this area is
-                within reach.
+              <div class="area-stat">
+                <div class="area-stat-label">Most common property type</div>
+                <div class="area-stat-value" id="stat-type">—</div>
+                <div class="area-stat-sub" id="stat-type-sub"></div>
+              </div>
+              <div class="area-stat">
+                <div class="area-stat-label">Average price by type</div>
+                <div id="stat-breakdown" class="area-stat-value" style="font-size:0.85rem;font-family:'DM Sans',sans-serif">—</div>
               </div>
             </div>
           </div>
@@ -2284,47 +2185,47 @@
       }
 
       // ── AFFORDABILITY ──
-      function calcAfford() {
-        const budget = parseFloat(
-          document.getElementById("budget-input").value,
-        );
-        const deposit =
-          parseFloat(document.getElementById("deposit-input").value) || 0;
-        const resultEl = document.getElementById("afford-result");
-        const barWrap = document.getElementById("afford-bar-wrap");
-        const fill = document.getElementById("afford-fill");
+      function renderAreaStats() {
         if (!filteredSales.length) return;
-        const avg =
-          filteredSales.reduce((a, b) => a + b.price, 0) / filteredSales.length;
-        if (!budget || isNaN(budget)) {
-          resultEl.textContent =
-            "Enter your budget and deposit above to see if this area is within reach.";
-          resultEl.className = "afford-result";
-          barWrap.style.display = "none";
-          return;
-        }
-        const pct = Math.min((avg / budget) * 100, 120).toFixed(0);
-        barWrap.style.display = "block";
-        fill.style.width = Math.min(pct, 100) + "%";
-        document.getElementById("afford-bar-pct").textContent =
-          pct + "% of budget";
-        document.getElementById("afford-bar-left").textContent =
-          `Avg ${fmt(Math.round(avg))}`;
-        if (avg <= budget * 0.85) {
-          resultEl.className = "afford-result green";
-          fill.className = "afford-fill fill-green";
-          resultEl.innerHTML = `✅ <strong>Comfortably within budget.</strong> Average prices here are ${fmt(Math.round(avg))}, giving you ${fmt(Math.round(budget - avg))} headroom on your ${fmt(budget)} budget${deposit ? ` with a ${fmt(deposit)} deposit` : ""}. `;
-        } else if (avg <= budget) {
-          resultEl.className = "afford-result amber";
-          fill.className = "afford-fill fill-amber";
-          resultEl.innerHTML = `⚠️ <strong>Within budget but tight.</strong> The average of ${fmt(Math.round(avg))} is close to your ${fmt(budget)} limit. You may have limited choice in this area.`;
-        } else {
-          resultEl.className = "afford-result red";
-          fill.className = "afford-fill fill-red";
-          resultEl.innerHTML = `❌ <strong>Above your budget.</strong> Average prices of ${fmt(Math.round(avg))} exceed your ${fmt(budget)} budget by ${fmt(Math.round(avg - budget))}. Try a nearby district or adjust your filters.`;
-        }
-      }
 
+        document.getElementById('stat-total').textContent = filteredSales.length.toLocaleString() + ' sales';
+
+        const streetCounts = {};
+        filteredSales.forEach(s => {
+          const street = s.address.replace(/^\S+\s+/, '').trim() || 'Unknown';
+          streetCounts[street] = (streetCounts[street] || 0) + 1;
+        });
+        const topStreet = Object.entries(streetCounts).sort((a, b) => b[1] - a[1])[0];
+        if (topStreet) {
+          document.getElementById('stat-street').textContent = titleCase(topStreet[0]);
+          document.getElementById('stat-street-sub').textContent = `${topStreet[1]} sale${topStreet[1] > 1 ? 's' : ''} recorded`;
+        }
+
+        const typeCounts = {};
+        filteredSales.forEach(s => { typeCounts[s.type] = (typeCounts[s.type] || 0) + 1; });
+        const topType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0];
+        if (topType) {
+          document.getElementById('stat-type').textContent = topType[0];
+          const pct = Math.round(topType[1] / filteredSales.length * 100);
+          document.getElementById('stat-type-sub').textContent = `${topType[1]} sales — ${pct}% of results`;
+        }
+
+        const typeAvgs = {};
+        Object.keys(typeCounts).forEach(t => {
+          const prices = filteredSales.filter(s => s.type === t).map(s => s.price);
+          typeAvgs[t] = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+        });
+        const maxAvg = Math.max(...Object.values(typeAvgs));
+        const sorted = Object.entries(typeAvgs).sort((a, b) => b[1] - a[1]);
+        document.getElementById('stat-breakdown').innerHTML = sorted.map(([t, avg]) => `
+          <div class="breakdown-row">
+            <span class="breakdown-type">${t}</span>
+            <div class="breakdown-bar-wrap"><div class="breakdown-bar-fill" style="width:${Math.round(avg/maxAvg*100)}%"></div></div>
+            <span class="breakdown-price">${fmt(avg)}</span>
+          </div>
+        `).join('');
+      }
+      
       // ── SALES LIST ──
       function renderSales() {
         const displaySize = parseInt(
