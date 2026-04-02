@@ -2202,7 +2202,7 @@
       if (fullMatch) return fullMatch[1] + " " + fullMatch[2];
       // Partial e.g. NE244 → just return district NE24
       const partialMatch = stripped.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)(\d)$/);
-      if (partialMatch) return partialMatch[1];
+      if (partialMatch && OUTCODE_TOWNS[partialMatch[1] + partialMatch[2]] === undefined) return partialMatch[1];
       return raw.trim().toUpperCase().replace(/\s+/g, " ");
     }
 
