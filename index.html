@@ -379,6 +379,63 @@
         border-color: var(--ink);
       }
 
+      .email-capture {
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        text-align: left;
+      }
+      .email-capture-heading {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 3px;
+      }
+      .email-capture-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .email-capture-row {
+        display: flex;
+        gap: 8px;
+      }
+      .email-capture-input {
+        flex: 1;
+        height: 40px;
+        padding: 0 14px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.875rem;
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+        background: white;
+      }
+      .email-capture-input:focus {
+        border-color: var(--blue);
+      }
+      .email-capture-btn {
+        height: 40px;
+        padding: 0 20px;
+        background: var(--ink);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+      }
+      .email-capture-btn:hover {
+        background: var(--blue);
+      }
+
       .examples-label {
         font-size: 0.72rem;
         color: var(--muted);
@@ -1042,6 +1099,21 @@
           <div class="search-mode-badge" id="search-mode-badge">
             <span class="mode-pill" id="mode-pill">Postcode</span>
             <span id="mode-text"></span>
+          </div>
+
+          <hr class="filter-divider" />
+          <div class="email-capture">
+            <p class="email-capture-heading">🏡 Get notified when new sales land in your area</p>
+            <p class="email-capture-sub">No spam. Just occasional property price updates.</p>
+            <form action="https://plotworth.us15.list-manage.com/subscribe/post?u=3d56dd4e79d77dc28f2fb2ce6&amp;id=069b9c43a3&amp;f_id=00a78de0f0" method="post" target="_blank" novalidate>
+              <div class="email-capture-row">
+                <input type="email" name="EMAIL" placeholder="Your email address" required class="email-capture-input" />
+                <div style="position:absolute;left:-5000px" aria-hidden="true">
+                  <input type="text" name="b_3d56dd4e79d77dc28f2fb2ce6_069b9c43a3" tabindex="-1" value="" />
+                </div>
+                <button type="submit" class="email-capture-btn">Notify me</button>
+              </div>
+            </form>
           </div>
 
           <hr class="filter-divider" />
