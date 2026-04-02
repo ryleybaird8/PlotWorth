@@ -398,9 +398,18 @@
         color: var(--muted);
         margin-bottom: 12px;
       }
+      
       .email-capture-row {
         display: flex;
         gap: 8px;
+      }
+      @media (max-width: 600px) {
+        .email-capture-row {
+          flex-direction: column;
+        }
+        .email-capture-btn {
+          width: 100%;
+        }
       }
       .email-capture-input {
         flex: 1;
