@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plot Worth - What did homes sell for near you?</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -24,29 +24,26 @@
         padding: 0;
       }
       :root {
-        --ink: #2c2c2c;
-        --blue: #6b7c6e;
-        --blue-light: #8a9e8d;
-        --teal: #7a9e7e;
-        --cream: #fdf8f3;
-        --cream-dark: #f5ede0;
-        --sand: #e8ddd0;
-        --text: #2c2c2c;
-        --muted: #7a7065;
-        --light: #faf5ef;
-        --border: #e8ddd0;
-        --green: #6b8f6e;
-        --green-bg: #f0f5f0;
-        --red: #b85c4a;
-        --red-bg: #fdf0ee;
-        --amber: #b08050;
-        --amber-bg: #fdf5e8;
+        --ink: #1D1D1F;
+        --primary: #E8552E;
+        --primary-light: #FF6B42;
+        --primary-bg: #FCEEE9;
+        --cream: #F1F1F1;
+        --white: #FFFFFF;
+        --text: #1D1D1F;
+        --muted: #6B6B6B;
+        --light: #F7F7F7;
+        --border: #E0E0E0;
+        --green: #22A55B;
+        --green-bg: #E8F5EE;
+        --red: #DC3545;
+        --red-bg: #FDF0F0;
       }
       html {
         scroll-behavior: smooth;
       }
       body {
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         background: var(--cream);
         color: var(--text);
         min-height: 100vh;
@@ -64,28 +61,25 @@
         z-index: 50;
       }
       .logo {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--cream);
+        font-weight: 700;
+        color: var(--white);
         letter-spacing: -0.02em;
         display: flex;
         align-items: center;
         gap: 10px;
       }
       .logo-pip {
-        width: 8px;
-        height: 8px;
-        background: var(--teal);
+        width: 10px;
+        height: 10px;
+        background: var(--primary);
         border-radius: 50%;
         display: inline-block;
       }
-      .logo span {
-        color: var(--blue-light);
-      }
       .nav-tag {
         font-size: 0.72rem;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.4);
         display: none;
       }
       @media (min-width: 601px) {
@@ -116,12 +110,12 @@
         background:
           radial-gradient(
             ellipse 70% 80% at 10% 50%,
-            rgba(107, 124, 110, 0.25) 0%,
+            rgba(232, 85, 46, 0.15) 0%,
             transparent 60%
           ),
           radial-gradient(
             ellipse 50% 60% at 90% 20%,
-            rgba(122, 158, 126, 0.12) 0%,
+            rgba(232, 85, 46, 0.08) 0%,
             transparent 50%
           );
         pointer-events: none;
@@ -134,62 +128,31 @@
         text-align: center;
       }
 
-      .hero-eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 100px;
-        padding: 5px 14px;
-        font-size: 0.73rem;
-        color: rgba(255, 255, 255, 0.5);
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-      }
-      .live-dot {
-        width: 6px;
-        height: 6px;
-        background: var(--teal);
-        border-radius: 50%;
-        animation: blink 2s ease-in-out infinite;
-      }
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.3;
-        }
-      }
-
       .hero h1 {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: clamp(2rem, 4.5vw, 3rem);
-        font-weight: 300;
-        color: var(--cream);
+        font-weight: 700;
+        color: var(--white);
         line-height: 1.2;
         letter-spacing: -0.025em;
         margin-bottom: 10px;
       }
       .hero h1 em {
-        font-style: italic;
-        color: var(--blue-light);
+        font-style: normal;
+        color: var(--primary);
       }
       .hero-sub {
-        font-size: 0.92rem;
-        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.5);
         margin-bottom: 32px;
         line-height: 1.6;
       }
 
       .search-wrap {
-        background: white;
+        background: var(--white);
         border-radius: 16px;
         padding: 24px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
       }
       .search-top-row {
         display: grid;
@@ -215,7 +178,7 @@
         padding: 0 18px;
         border: 2px solid var(--border);
         border-radius: 10px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 1.05rem;
         color: var(--text);
         background: var(--light);
@@ -227,8 +190,8 @@
         text-transform: uppercase;
       }
       .search-field input:focus {
-        border-color: var(--blue);
-        background: white;
+        border-color: var(--primary);
+        background: var(--white);
       }
       .search-field input::placeholder {
         color: #94a3b8;
@@ -263,23 +226,20 @@
         color: white;
       }
       .mode-pill.postcode {
-        background: var(--blue);
+        background: var(--ink);
       }
       .mode-pill.district {
-        background: var(--teal);
-      }
-      .mode-pill.town {
-        background: var(--amber);
+        background: var(--primary);
       }
 
       .search-btn {
         height: 52px;
         padding: 0 28px;
-        background: var(--ink);
+        background: var(--primary);
         color: white;
         border: none;
         border-radius: 10px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.95rem;
         font-weight: 600;
         cursor: pointer;
@@ -290,7 +250,7 @@
         white-space: nowrap;
       }
       .search-btn:hover {
-        background: var(--blue);
+        background: var(--primary-light);
       }
       .search-btn:disabled {
         background: #94a3b8;
@@ -336,7 +296,7 @@
         padding: 0 10px;
         border: 1.5px solid var(--border);
         border-radius: 8px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.82rem;
         color: var(--text);
         background: var(--light);
@@ -346,8 +306,8 @@
       }
       .filter-group select:focus,
       .filter-group input:focus {
-        border-color: var(--blue);
-        background: white;
+        border-color: var(--primary);
+        background: var(--white);
       }
       .filter-group input::placeholder {
         color: #94a3b8;
@@ -367,7 +327,7 @@
         border: 1.5px solid var(--border);
         border-radius: 8px;
         padding: 6px 12px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.8rem;
         color: var(--muted);
         cursor: pointer;
@@ -418,15 +378,15 @@
         padding: 0 14px;
         border: 1.5px solid var(--border);
         border-radius: 8px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.875rem;
         color: var(--text);
         outline: none;
         transition: border-color 0.15s;
-        background: white;
+        background: var(--white);
       }
       .email-capture-input:focus {
-        border-color: var(--blue);
+        border-color: var(--primary);
       }
       .email-capture-btn {
         height: 40px;
@@ -435,7 +395,7 @@
         color: white;
         border: none;
         border-radius: 8px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.875rem;
         font-weight: 600;
         cursor: pointer;
@@ -443,7 +403,7 @@
         white-space: nowrap;
       }
       .email-capture-btn:hover {
-        background: var(--blue);
+        background: #333;
       }
 
       .examples-label {
@@ -459,7 +419,7 @@
       }
       .hint-chip {
         background: var(--cream);
-        border: 1px solid var(--sand);
+        border: 1px solid var(--border);
         border-radius: 100px;
         padding: 5px 14px;
         font-size: 0.75rem;
@@ -473,14 +433,14 @@
         border-color: var(--ink);
       }
       .hint-chip.district-chip {
-        border-color: #a5f3eb;
-        background: #f0fdfa;
-        color: var(--teal);
+        border-color: var(--primary);
+        background: var(--primary-bg);
+        color: var(--primary);
       }
       .hint-chip.district-chip:hover {
-        background: var(--teal);
+        background: var(--primary);
         color: white;
-        border-color: var(--teal);
+        border-color: var(--primary);
       }
 
       .how-strip {
@@ -502,7 +462,7 @@
         font-size: 1.2rem;
       }
       .how-item strong {
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.9);
         display: block;
         font-size: 0.88rem;
         margin-bottom: 2px;
@@ -524,9 +484,9 @@
         opacity: 0.35;
       }
       .empty-state h3 {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.5rem;
-        font-weight: 300;
+        font-weight: 600;
         color: var(--ink);
         margin-bottom: 8px;
       }
@@ -550,7 +510,7 @@
         width: 40px;
         height: 40px;
         border: 3px solid var(--border);
-        border-top-color: var(--blue);
+        border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
         margin: 0 auto 20px;
@@ -561,8 +521,9 @@
         }
       }
       .loading-postcode {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.4rem;
+        font-weight: 600;
         color: var(--ink);
         margin-bottom: 6px;
       }
@@ -608,9 +569,9 @@
         animation: fadeUp 0.3s ease both;
       }
       .result-header h2 {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.8rem;
-        font-weight: 300;
+        font-weight: 600;
         color: var(--ink);
         letter-spacing: -0.02em;
       }
@@ -639,7 +600,7 @@
         flex-wrap: wrap;
         margin-bottom: 20px;
         padding: 10px 16px;
-        background: white;
+        background: var(--white);
         border: 1px solid var(--border);
         border-radius: 10px;
         font-size: 0.8rem;
@@ -660,7 +621,7 @@
       .clear-filters {
         margin-left: auto;
         font-size: 0.75rem;
-        color: var(--blue);
+        color: var(--primary);
         cursor: pointer;
         text-decoration: underline;
       }
@@ -673,7 +634,7 @@
         animation: fadeUp 0.4s ease both;
       }
       .summary-card {
-        background: white;
+        background: var(--white);
         border-radius: 12px;
         padding: 20px;
         border: 1px solid var(--border);
@@ -688,9 +649,9 @@
         margin-bottom: 8px;
       }
       .summary-card-value {
-        font-family: "Fraunces", serif;
+        font-family: "Bricolage Grotesque", sans-serif;
         font-size: 1.8rem;
-        font-weight: 600;
+        font-weight: 700;
         color: var(--ink);
         letter-spacing: -0.02em;
         line-height: 1;
@@ -715,7 +676,7 @@
         animation: fadeUp 0.4s ease 0.1s both;
       }
       .panel {
-        background: white;
+        background: var(--white);
         border-radius: 14px;
         border: 1px solid var(--border);
         box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
@@ -750,7 +711,7 @@
         color: var(--red);
       }
       .badge-neutral {
-        background: var(--cream-dark);
+        background: var(--light);
         color: var(--muted);
       }
       .chart-wrap {
@@ -762,12 +723,12 @@
       .area-stat { padding: 12px 0; border-bottom: 1px solid var(--border); }
       .area-stat:last-child { border-bottom: none; }
       .area-stat-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
-      .area-stat-value { font-family: "Fraunces", serif; font-size: 1.2rem; font-weight: 400; color: var(--ink); line-height: 1.2; }
+      .area-stat-value { font-family: "Bricolage Grotesque", sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
       .area-stat-sub { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
       .breakdown-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; margin-bottom: 5px; }
       .breakdown-type { color: var(--muted); min-width: 70px; }
       .breakdown-bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-      .breakdown-bar-fill { height: 100%; border-radius: 2px; background: var(--blue); }
+      .breakdown-bar-fill { height: 100%; border-radius: 2px; background: var(--primary); }
       .breakdown-price { font-weight: 600; color: var(--ink); min-width: 70px; text-align: right; font-size: 0.78rem; }
 
       .sales-panel {
@@ -791,10 +752,10 @@
         padding: 5px 10px;
         border: 1px solid var(--border);
         border-radius: 6px;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.8rem;
         color: var(--text);
-        background: white;
+        background: var(--white);
         outline: none;
         cursor: pointer;
       }
@@ -848,7 +809,7 @@
       .type-badge {
         display: inline-flex;
         align-items: center;
-        background: var(--cream-dark);
+        background: var(--light);
         color: var(--muted);
         font-size: 0.7rem;
         font-weight: 600;
@@ -864,8 +825,8 @@
         color: #16a34a;
       }
       .type-badge.terraced {
-        background: #fff7ed;
-        color: #c2410c;
+        background: var(--primary-bg);
+        color: var(--primary);
       }
       .type-badge.flat {
         background: #faf5ff;
@@ -877,20 +838,20 @@
       }
       .sale-price {
         font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--ink);
-        font-family: "Fraunces", serif;
+        font-weight: 700;
+        color: var(--primary);
+        font-family: "Bricolage Grotesque", sans-serif;
       }
       .estate-chip {
         font-size: 0.68rem;
         color: var(--muted);
-        background: var(--cream-dark);
+        background: var(--light);
         padding: 2px 7px;
         border-radius: 4px;
       }
       .estate-chip.freehold {
-        background: #f0fdf4;
-        color: #15803d;
+        background: var(--green-bg);
+        color: var(--green);
       }
       .no-results {
         padding: 40px 20px;
@@ -912,8 +873,8 @@
         padding: 0 16px;
         border: 1.5px solid var(--border);
         border-radius: 8px;
-        background: white;
-        font-family: "DM Sans", sans-serif;
+        background: var(--white);
+        font-family: "Plus Jakarta Sans", sans-serif;
         font-size: 0.85rem;
         color: var(--text);
         cursor: pointer;
@@ -923,8 +884,8 @@
         gap: 6px;
       }
       .page-btn:hover:not(:disabled) {
-        border-color: var(--blue);
-        color: var(--blue);
+        border-color: var(--primary);
+        color: var(--primary);
       }
       .page-btn:disabled {
         opacity: 0.4;
@@ -942,18 +903,18 @@
       }
       footer p {
         font-size: 0.78rem;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.4);
         line-height: 1.8;
       }
       footer strong {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.7);
       }
       footer a {
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.5);
         text-decoration: none;
       }
       footer a:hover {
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--primary);
       }
 
       .map-panel {
@@ -1061,7 +1022,8 @@
   <body>
     <nav>
       <div class="logo">
-        <img src="plotworth_logo.png" alt="Plot Worth" height="28" />
+        <span class="logo-pip"></span>
+        PlotWorth
       </div>
       <span class="nav-tag"
         >Powered by HM Land Registry · Free · No account needed</span
@@ -1316,7 +1278,7 @@
               >Semi-D</span
             >
             <span class="legend-item"
-              ><span class="legend-dot" style="background: #c2410c"></span
+              ><span class="legend-dot" style="background: #E8552E"></span
               >Terraced</span
             >
             <span class="legend-item"
@@ -1364,7 +1326,7 @@
               </div>
               <div class="area-stat">
                 <div class="area-stat-label">Average price by type</div>
-                <div id="stat-breakdown" class="area-stat-value" style="font-size:0.85rem;font-family:'DM Sans',sans-serif">—</div>
+                <div id="stat-breakdown" class="area-stat-value" style="font-size:0.85rem;font-family:'Plus Jakarta Sans',sans-serif">—</div>
               </div>
             </div>
           </div>
@@ -1451,8 +1413,8 @@
         Read our 
         <a href="/privacy.html" target="_blank">Privacy Policy</a> <br />
         <div style="display: flex; align-items: flex-start; justify-content: center; margin: 18px auto 0; max-width: 600px;">
-          <span style="font-size:1.2em; margin-right: 10px; color: #7b887d;">&#8505;</span>
-          <span style="background: #494949; color: #dbdbdb; border-radius: 8px; padding: 10px 16px; font-size: 0.92em; border: 1px solid #7b887d; box-shadow: 0 1px 6px rgba(0,0,0,0.04);">
+          <span style="font-size:1.2em; margin-right: 10px; color: #888;">&#8505;</span>
+          <span style="background: #333; color: #ccc; border-radius: 8px; padding: 10px 16px; font-size: 0.92em; border: 1px solid #444; box-shadow: 0 1px 6px rgba(0,0,0,0.04);">
             <strong>Note:</strong> Land Registry data may be delayed by <strong>1–3 months</strong> due to their update cycle. The most recent sales may not yet be included.
           </span>
         </div>
@@ -1466,7 +1428,7 @@
       const TYPE_COLOURS = {
         detached: "#1d4ed8",
         semi: "#16a34a",
-        terraced: "#c2410c",
+        terraced: "#E8552E",
         flat: "#7c3aed",
         other: "#64748b",
       };
@@ -1571,10 +1533,10 @@
             icon: makeCircleIcon(colour),
           });
           marker.bindPopup(
-            `<div style="font-family:'DM Sans',sans-serif;min-width:180px">
-      <div style="font-weight:600;font-size:.85rem;color:#0e1a2b;margin-bottom:3px">${sale.address}</div>
-      <div style="font-size:.73rem;color:#64748b;margin-bottom:8px">${sale.postcode}</div>
-      <div style="font-size:1.1rem;font-weight:700;color:#0e1a2b;margin-bottom:6px">${fmt(sale.price)}</div>
+            `<div style="font-family:'Plus Jakarta Sans',sans-serif;min-width:180px">
+      <div style="font-weight:600;font-size:.85rem;color:#1D1D1F;margin-bottom:3px">${sale.address}</div>
+      <div style="font-size:.73rem;color:#6B6B6B;margin-bottom:8px">${sale.postcode}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#E8552E;margin-bottom:6px">${fmt(sale.price)}</div>
       <div style="display:flex;gap:5px;flex-wrap:wrap">
         <span style="font-size:.7rem;background:#f1f5f9;padding:2px 8px;border-radius:4px;color:#475569">${typeShort}</span>
         <span style="font-size:.7rem;background:#f1f5f9;padding:2px 8px;border-radius:4px;color:#475569">${formatDate(sale.date)}</span>
@@ -1603,42 +1565,32 @@
       }
 
       // ── OUTCODE → TOWN LOOKUP TABLE ──
-      // Maps postcode districts to their Land Registry town names
-      // ── PASTE THIS TO REPLACE YOUR EXISTING OUTCODE_TOWNS AND OUTCODE_LABELS ──
-// 2,130 England & Wales outcodes
-
       const OUTCODE_TOWNS = {
-        // ── LONDON — East ──
         'E1':'LONDON','E1W':'LONDON','E2':'LONDON','E3':'LONDON','E4':'LONDON',
         'E5':'LONDON','E6':'LONDON','E7':'LONDON','E8':'LONDON','E9':'LONDON',
         'E10':'LONDON','E11':'LONDON','E12':'LONDON','E13':'LONDON','E14':'LONDON',
         'E15':'LONDON','E16':'LONDON','E17':'LONDON','E18':'LONDON','E20':'LONDON',
-        // North London
         'N1':'LONDON','N1C':'LONDON','N2':'LONDON','N3':'LONDON','N4':'LONDON',
         'N5':'LONDON','N6':'LONDON','N7':'LONDON','N8':'LONDON','N9':'LONDON',
         'N10':'LONDON','N11':'LONDON','N12':'LONDON','N13':'LONDON','N14':'LONDON',
         'N15':'LONDON','N16':'LONDON','N17':'LONDON','N18':'LONDON','N19':'LONDON',
         'N20':'LONDON','N21':'LONDON','N22':'LONDON',
-        // North West London
         'NW1':'LONDON','NW1W':'LONDON','NW2':'LONDON','NW3':'LONDON','NW4':'LONDON',
         'NW5':'LONDON','NW6':'LONDON','NW7':'LONDON','NW8':'LONDON','NW9':'LONDON',
         'NW10':'LONDON','NW11':'LONDON',
-        // South East London
         'SE1':'LONDON','SE1P':'LONDON','SE2':'LONDON','SE3':'LONDON','SE4':'LONDON',
         'SE5':'LONDON','SE6':'LONDON','SE7':'LONDON','SE8':'LONDON','SE9':'LONDON',
         'SE10':'LONDON','SE11':'LONDON','SE12':'LONDON','SE13':'LONDON','SE14':'LONDON',
         'SE15':'LONDON','SE16':'LONDON','SE17':'LONDON','SE18':'LONDON','SE19':'LONDON',
         'SE20':'LONDON','SE21':'LONDON','SE22':'LONDON','SE23':'LONDON','SE24':'LONDON',
         'SE25':'LONDON','SE26':'LONDON','SE27':'LONDON','SE28':'LONDON',
-        // South West London
         'SW1A':'LONDON','SW1E':'LONDON','SW1H':'LONDON','SW1P':'LONDON','SW1V':'LONDON',
         'SW1W':'LONDON','SW1X':'LONDON','SW1Y':'LONDON','SW2':'LONDON','SW3':'LONDON',
         'SW4':'LONDON','SW5':'LONDON','SW6':'LONDON','SW7':'LONDON','SW8':'LONDON',
         'SW9':'LONDON','SW10':'LONDON','SW11':'LONDON','SW12':'LONDON','SW13':'LONDON',
         'SW14':'LONDON','SW15':'LONDON','SW16':'LONDON','SW17':'LONDON','SW18':'LONDON',
         'SW19':'LONDON','SW20':'LONDON',
-        // West London
-        'W1A':'LONDON','W1B':'LONDON','W1C':'LONDON','W1D':'LONDON','W1F':'LONDON',
+        'W1A':'LONDON','W1B':'LONDON','W1C':'LONDON','W1D':'LONDON',
         'W1G':'LONDON','W1H':'LONDON','W1J':'LONDON','W1K':'LONDON','W1S':'LONDON',
         'W1T':'LONDON','W1U':'LONDON','W1W':'LONDON','W2':'LONDON','W3':'LONDON',
         'W4':'LONDON','W5':'LONDON','W6':'LONDON','W7':'LONDON','W8':'LONDON',
