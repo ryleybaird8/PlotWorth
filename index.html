@@ -2617,7 +2617,7 @@
             100
           ).toFixed(1);
           const badge = document.getElementById("chart-badge");
-          badge.textContent = `${parseFloat(change) > 0 ? "↑" : "↓"} ${Math.abs(change)}% since ${years[0]}`;
+          if (years.length < 4) document.getElementById('chart-badge').title = 'Limited to most recent 100 sales — historical data may be incomplete for busy areas';
           badge.className = `panel-badge ${parseFloat(change) > 0 ? "badge-green" : "badge-red"}`;
         }
         if (priceChart) priceChart.destroy();
