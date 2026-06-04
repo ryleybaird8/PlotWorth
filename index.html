@@ -2589,13 +2589,22 @@
 
       // ── CHART ──
       function renderChart() {
+        const dateYearsSelected = parseInt(document.getElementById("date-filter").value) || 999;
+        const useQuarters = dateYearsSelected <= 3;
         const byYear = {};
         [...filteredSales]
           .sort((a, b) => a.dateObj - b.dateObj)
           .forEach((s) => {
-            const yr = s.dateObj.getFullYear();
-            if (!byYear[yr]) byYear[yr] = [];
-            byYear[yr].push(s.price);
+            let key;
+            if (useQuarters) {
+              const yr = s.dateObj.getFullYear();
+              const q = Math.floor(s.dateObj.getMonth() / 3) + 1;
+              key = `${yr} Q${q}`;
+            } else {
+              key = String(s.dateObj.getFullYear());
+            }
+            if (!byYear[key]) byYear[key] = [];
+            byYear[key].push(s.price);
           });
         const years = Object.keys(byYear).sort();
         const avgs = years.map((yr) =>
